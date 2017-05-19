@@ -85,7 +85,18 @@ define network::if::static (
   $metric = undef
 ) {
   # Validate our data
-  if ! is_ip_address($ipaddress) { fail("${ipaddress} is not an IP address.") }
+  if is_array($ipaddress) {
+    if size($ipaddress) > 0 {
+      validate_ip_address { $ipaddress: }
+      if ! count($ipaddress) = count($netmask) { fail("Number of IP address are different to number of Netmask.") }
+      $primary_ipaddress = $ipaddress[0]
+      $secondary_ipaddresses = delete_at($ipaddress, 0)
+    }
+  } elsif $ipaddress {
+    if ! is_ip_address($ipaddress) { fail("${ipaddress} is not an IP address.") }
+    $primary_ipaddress = $ipaddress
+    $secondary_ipaddresses = undef
+  }
   if is_array($ipv6address) {
     if size($ipv6address) > 0 {
       validate_ip_address { $ipv6address: }
@@ -96,6 +107,15 @@ define network::if::static (
     if ! is_ip_address($ipv6address) { fail("${ipv6address} is not an IPv6 address.") }
     $primary_ipv6address = $ipv6address
     $secondary_ipv6addresses = undef
+  }
+  if is_array($netmask) {
+    if size($netmask) > 0 {
+      $primary_netmask = $netmask[0]
+      $secondary_netmask = delete_at($netmask, 0)
+    }
+  } elsif $netmask {
+    $primary_netmask = $netmask
+    $secondary_netmask = undef
   }
 
   if ! is_mac_address($macaddress) {
@@ -115,33 +135,35 @@ define network::if::static (
   validate_bool($flush)
 
   network_if_base { $title:
-    ensure          => $ensure,
-    ifname          => $title,
-    device          => $device,
-    ipv6init        => $ipv6init,
-    ipaddress       => $ipaddress,
-    ipv6address     => $primary_ipv6address,
-    netmask         => $netmask,
-    gateway         => $gateway,
-    ipv6gateway     => $ipv6gateway,
-    ipv6autoconf    => $ipv6autoconf,
-    ipv6secondaries => $secondary_ipv6addresses,
-    macaddress      => $macaddy,
-    manage_hwaddr   => $manage_hwaddr,
-    bootproto       => 'none',
-    userctl         => $userctl,
-    mtu             => $mtu,
-    ethtool_opts    => $ethtool_opts,
-    peerdns         => $peerdns,
-    ipv6peerdns     => $ipv6peerdns,
-    dns1            => $dns1,
-    dns2            => $dns2,
-    domain          => $domain,
-    linkdelay       => $linkdelay,
-    scope           => $scope,
-    flush           => $flush,
-    zone            => $zone,
-    defroute        => $defroute,
-    metric          => $metric,
+    ensure             => $ensure,
+    ifname             => $title,
+    device             => $device,
+    ipv6init           => $ipv6init,
+    ipaddress          => $primary_ipaddress,
+    ipv6address        => $primary_ipv6address,
+    netmask            => $primary_netmask,
+    gateway            => $gateway,
+    ipv6gateway        => $ipv6gateway,
+    ipv6autoconf       => $ipv6autoconf,
+    ipsecondaries      => $secondary_ipaddresses,
+    ipv6secondaries    => $secondary_ipv6addresses,
+    netmasksecondaries => $secondary_netmask,
+    macaddress         => $macaddy,
+    manage_hwaddr      => $manage_hwaddr,
+    bootproto          => 'none',
+    userctl            => $userctl,
+    mtu                => $mtu,
+    ethtool_opts       => $ethtool_opts,
+    peerdns            => $peerdns,
+    ipv6peerdns        => $ipv6peerdns,
+    dns1               => $dns1,
+    dns2               => $dns2,
+    domain             => $domain,
+    linkdelay          => $linkdelay,
+    scope              => $scope,
+    flush              => $flush,
+    zone               => $zone,
+    defroute           => $defroute,
+    metric             => $metric,
   }
 } # define network::if::static
