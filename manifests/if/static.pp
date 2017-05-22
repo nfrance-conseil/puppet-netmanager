@@ -88,7 +88,7 @@ define network::if::static (
   if is_array($ipaddress) {
     if size($ipaddress) > 0 {
       validate_ip_address { $ipaddress: }
-      if ! count($ipaddress) = count($netmask) { fail("Number of IP address are different to number of Netmask.") }
+      if ! count($ipaddress) == count($netmask) { fail("Number of IP address are different to number of Netmask.") }
       $primary_ipaddress = $ipaddress[0]
       $secondary_ipaddresses = delete_at($ipaddress, 0)
     }
