@@ -19,8 +19,10 @@ TYPE=Ethernet
 <% if @ipsecondaries and @ipsecondaries.length > 0 %>
 <% @ipsecondaries.to_enum.with_index(1).each do |additionnalip, idx| -%> <%= "IPADDR#{idx}=#{additionnalip}"%>
 <% end -%>
+<% end -%>
 <% if @netmasksecondaries and @netmasksecondaries.length > 0 %>
 <% @netmasksecondaries.to_enum.with_index(1).each do |additionnalnetmask, idx| -%> <%= "NETMASK#{idx}=#{additionnalnetmask}"%>
+<% end -%>
 <% end -%>
 <% if @mtu %>MTU=<%= @mtu %>
 <% end -%>
