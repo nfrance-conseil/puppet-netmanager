@@ -64,12 +64,12 @@ define network::route (
     before  => File["ifcfg-${ifname}"],
     notify  => Exec["nmcli_clean_manage_${ifname}"]
   }
-  exec { "nmcli_clean_route_${ifname}":
-    path    => '/usr/bin:/bin:/usr/sbin:/sbin',
-    command => "nmcli connection delete $(nmcli -f UUID,DEVICE connection show|grep \'\\-\\-\'|awk \'{print \$1}\')",
-    onlyif  => "nmcli -f UUID,DEVICE connection show|grep \'\\-\\-\'",
-    require => Exec["nmcli_clean_manage_${ifname}"]
-  }
+#  exec { "nmcli_clean_route_${ifname}":
+#    path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+#    command => "nmcli connection delete $(nmcli -f UUID,DEVICE connection show|grep \'\\-\\-\'|awk \'{print \$1}\')",
+#    onlyif  => "nmcli -f UUID,DEVICE connection show|grep \'\\-\\-\'",
+#    require => Exec["nmcli_clean_manage_${ifname}"]
+#  }
 
   exec { "nmcli_config_route_${ifname}":
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
@@ -82,7 +82,7 @@ define network::route (
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
     command     => "nmcli connection ${ensure} ${ifname}",
     refreshonly => true,
-    notify      => Exec["nmcli_clean_route_${ifname}"],
+#    notify      => Exec["nmcli_clean_route_${ifname}"],
     require     => Exec["nmcli_config_route_${ifname}"]
   }
 } # define network::route
