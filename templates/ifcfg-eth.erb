@@ -16,10 +16,10 @@ TYPE=Ethernet
 <% end -%>
 <% if @gateway and @gateway != '' %>GATEWAY=<%= @gateway %>
 <% end -%>
-<% if @ipsecondaries and @ipsecondaries.length > 0%><% @ipsecondaries.to_enum.with_index(1).each do |additionnalip, idx| -%> <%= "IPADDR#{idx}=#{additionnalip}"%>
+<% if @ipsecondaries and @ipsecondaries.length > 0 %><% @ipsecondaries.to_enum.with_index(1).each do |additionnalip, idx| -%><%= "IPADDR#{idx}=#{additionnalip}"%>
 <% end -%>
 <% end -%>
-<% if @netmasksecondaries and @netmasksecondaries.length > 0 %><% @netmasksecondaries.to_enum.with_index(1).each do |additionnalnetmask, idx| -%> <%= "NETMASK#{idx}=#{additionnalnetmask}"%>
+<% if @netmasksecondaries and @netmasksecondaries.length > 0 %><% @netmasksecondaries.to_enum.with_index(1).each do |additionnalnetmask, idx| -%><%= "NETMASK#{idx}=#{additionnalnetmask}"%>
 <% end -%>
 <% end -%>
 <% if @mtu %>MTU=<%= @mtu %>
