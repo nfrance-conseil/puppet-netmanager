@@ -110,34 +110,36 @@ define network_if_base (
   $ipaddress,
   $netmask,
   $macaddress,
-  $manage_hwaddr   = true,
-  $gateway         = undef,
-  $noaliasrouting  = false,
-  $ipv6address     = undef,
-  $ipv6gateway     = undef,
-  $ipv6init        = false,
-  $ipv6autoconf    = false,
-  $ipv6secondaries = undef,
-  $bootproto       = 'none',
-  $userctl         = false,
-  $mtu             = undef,
-  $dhcp_hostname   = undef,
-  $ethtool_opts    = undef,
-  $bonding_opts    = undef,
-  $isalias         = false,
-  $peerdns         = false,
-  $ipv6peerdns     = false,
-  $dns1            = undef,
-  $dns2            = undef,
-  $domain          = undef,
-  $bridge          = undef,
-  $linkdelay       = undef,
-  $scope           = undef,
-  $check_link_down = false,
-  $flush           = false,
-  $defroute        = undef,
-  $zone            = undef,
-  $metric          = undef
+  $manage_hwaddr      = true,
+  $gateway            = undef,
+  $noaliasrouting     = false,
+  $ipv6address        = undef,
+  $ipv6gateway        = undef,
+  $ipv6init           = false,
+  $ipv6autoconf       = false,
+  $ipsecondaries      = undef,
+  $netmasksecondaries = undef,
+  $ipv6secondaries    = undef,
+  $bootproto          = 'none',
+  $userctl            = false,
+  $mtu                = undef,
+  $dhcp_hostname      = undef,
+  $ethtool_opts       = undef,
+  $bonding_opts       = undef,
+  $isalias            = false,
+  $peerdns            = false,
+  $ipv6peerdns        = false,
+  $dns1               = undef,
+  $dns2               = undef,
+  $domain             = undef,
+  $bridge             = undef,
+  $linkdelay          = undef,
+  $scope              = undef,
+  $check_link_down    = false,
+  $flush              = false,
+  $defroute           = undef,
+  $zone               = undef,
+  $metric             = undef
 ) {
   # Validate our booleans
   validate_bool($noaliasrouting)
@@ -207,12 +209,12 @@ define network_if_base (
     notify  => Exec["nmcli_config_${ifname}"]
   }
 
-  exec { "nmcli_clean_${ifname}":
-    path    => '/usr/bin:/bin:/usr/sbin:/sbin',
-    command => "nmcli connection delete $(nmcli -f UUID,DEVICE connection show|grep \'\\-\\-\'|awk \'{print \$1}\')",
-    onlyif  => "nmcli -f UUID,DEVICE connection show|grep \'\\-\\-\'",
-    require => Exec["nmcli_manage_${ifname}"]
-  }
+#  exec { "nmcli_clean_${ifname}":
+#    path    => '/usr/bin:/bin:/usr/sbin:/sbin',
+#    command => "nmcli connection delete $(nmcli -f UUID,DEVICE connection show|grep \'\\-\\-\'|awk \'{print \$1}\')",
+#    onlyif  => "nmcli -f UUID,DEVICE connection show|grep \'\\-\\-\'",
+#    require => Exec["nmcli_manage_${ifname}"]
+#  }
 
   exec { "nmcli_config_${ifname}":
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
@@ -225,7 +227,7 @@ define network_if_base (
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
     command     => "nmcli connection ${ensure} ${ifname}",
     refreshonly => true,
-    notify      => Exec["nmcli_clean_${ifname}"],
+#    notify      => Exec["nmcli_clean_${ifname}"],
     require     => Exec["nmcli_config_${ifname}"]
   }
 
