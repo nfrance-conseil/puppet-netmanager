@@ -62,7 +62,7 @@ define network::route (
     path    => "/etc/sysconfig/network-scripts/route-${ifname}",
     content => template('network/route-eth.erb'),
     before  => File["ifcfg-${ifname}"],
-    notify  => Exec["nmcli_clean_manage_${ifname}"]
+    notify  => Exec["nmcli_config_route_${ifname}"]
   }
 #  exec { "nmcli_clean_route_${ifname}":
 #    path    => '/usr/bin:/bin:/usr/sbin:/sbin',
