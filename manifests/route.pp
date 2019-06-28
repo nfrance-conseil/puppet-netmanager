@@ -73,7 +73,7 @@ define network::route (
 
   exec { "nmcli_config_route_${ifname}":
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
-    command     => "nmcli connection load /etc/sysconfig/network-scripts/ifcfg-${ifname}",
+    command     => "nmcli connection load /etc/sysconfig/network-scripts/route-${ifname}",
     refreshonly => true,
     notify      => Exec["nmcli_clean_manage_${ifname}"],
   }
